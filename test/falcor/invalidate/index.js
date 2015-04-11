@@ -14,7 +14,6 @@ var Complex = Expected.Complex;
 var Values = Expected.Values;
 var chai = require("chai");
 var expect = chai.expect;
-var inspect = require("util").inspect;
 var noOp = function() {};
 
 var getModel = testRunner.getModel;
@@ -34,7 +33,7 @@ describe("Invalidate", function() {
                 return model.withoutDataSource().get(["videos", 3355, "summary"]);
             }).
             doAction(function(x) {
-                throw inspect(x, {depth: 10}) + " should not be onNext'd";
+                throw "Should not be onNext";
             });
         var otherLeaf = model.get(["videos", 3355, "art"]).toPathValues();
         var count = 0;
@@ -87,7 +86,7 @@ describe("Invalidate", function() {
                 return model.withoutDataSource().get(summary.slice());
             }).
             doAction(function(x) {
-                throw inspect(x, {depth: 10}) + " should not be onNext'd";
+                throw "Should not be onNext";
             });
         var otherLeaf = model.get(art.slice()).toPathValues();
         var count = 0;
@@ -141,7 +140,7 @@ describe("Invalidate", function() {
                 return model.withoutDataSource().get(summary.concat());
             }).
             doAction(function(x) {
-                throw inspect(x, {depth: 10}) + " should not be onNext'd";
+                throw "Should not be onNext";
             });
         var otherLeaf = model.get(["lists", "abcd", 0, "summary"]).toPathValues();
         var count = 0;

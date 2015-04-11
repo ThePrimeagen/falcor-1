@@ -15,8 +15,6 @@ var $path = require("../../lib/types/path");
 var $sentinel = require("../../lib/types/sentinel");
 
 var modes = [{
-        
-    }, {
         boxed: true
     }, {
         boxed: true,
@@ -51,7 +49,7 @@ function execute(output, suffix, opts) {
         // set new values
         describe("by setting", function() {
             // Michael TODO: make sure get is returning the same output as set
-            xit("nothing, hopefully", function() {
+            it("nothing, hopefully", function() {
                 set_and_verify_json_graph(this.test, suffix, [{
                     paths: [[null, null, null, null], [null, null, null, null]],
                     jsong: {}

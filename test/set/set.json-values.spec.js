@@ -17,8 +17,6 @@ var $path = require("../../lib/types/path");
 var $sentinel = require("../../lib/types/sentinel");
 
 var modes = [{
-        
-    }, {
         boxed: true
     }, {
         boxed: true,
@@ -49,6 +47,7 @@ modes.forEach(function(opts, i) {
 });
 
 function execute(output, suffix, opts) {
+
     describe("Build " + output + " from JSON values", function() {
         // set new values
         describe("by setting", function() {
