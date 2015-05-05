@@ -128,24 +128,25 @@ describe("Special Cases", function() {
             1: 75
         });
     });
-    it.only('should setJSONGsAsJSONG with undefined values.', function() {
-        var model = new Model({source: new LocalDataSource(Cache())});
+    it('should setJSONGsAsJSONG with undefined values.', function() {
+        var model = new Model({source: new LocalDataSource(Cache())}).boxValues();
         var out = model._setJSONGsAsJSONG(model, [{
             jsong: {
                 test: {
                     u: {
-                        $type: $atom,
+                        $type: $atom
                     }
                 }
             },
             paths: [['test', 'u']]
         }], [{}]);
         testRunner.compare({
+            errors: [],
             requestedPaths: [['test', 'u']],
             optimizedPaths: [['test', 'u']],
             requestedMissingPaths: [],
             optimizedMissingPaths: [],
-            value: [{
+            values: [{
                 jsong: {
                     test: {
                         u: { $type: $atom }
