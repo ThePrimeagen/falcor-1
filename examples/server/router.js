@@ -53,6 +53,7 @@ Router.prototype = {
                 p[2] = Array.isArray(p[2]) && p[2] || [p[2]];
                 obs = self._nameAndBoxShots.call(self, p);
             } else if (hasName && p.length === 3) {
+                p.ids = p[1];
                 obs = self._genreListNames.call(self, p);
             } else {
                 obs = self._genreListTitles.call(self, p);

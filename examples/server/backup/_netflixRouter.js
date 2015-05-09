@@ -37,21 +37,7 @@ NetflixRouter.prototype = new Router([
             //    ]
             // }
 
-            var range = pathSet.ids;
-            return genreListService.
-                get(range, this.req.cookie).
-                then(function(payload) {
-                    var out = {};
-                    payload.rows.forEach(function(row) {
-                        out[row.index] = {name: row.name};
-                    });
-
-                    return {
-                        jsong: {
-                            genreLists: out
-                        }
-                    };
-                });
+            var genreListRange = pathSet.ids;
         }
     }
 ]);
