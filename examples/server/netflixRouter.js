@@ -13,11 +13,13 @@ module.exports = NetflixRouter;
 
 NetflixRouter.prototype = new Router([
     {
-        route: 'genreLists[{ranges:ids}].name',
-        get: function(pathSet) {
+        route: 'genreLists[{ranges:genreListRanges}].name',
+        get: function(aliasMap) {
 
             // here is what a pathSet might look
-            // ['genreLists', {from: 0, to: 1}, 'name']
+            // {
+            //     genreListRanges: {from: 0, to: 1}
+            // }
             //
             // What we need to output
             // jsong: {
@@ -26,6 +28,7 @@ NetflixRouter.prototype = new Router([
             //          1: { name: 'New Releases' }
             //      }
             // }
+            //
             // genreListService.get(RANGE, cookie) => promise
             // {
             //    rows: [
@@ -37,21 +40,7 @@ NetflixRouter.prototype = new Router([
             //    ]
             // }
 
-            var range = pathSet.ids;
-            return genreListService.
-                get(range, this.req.cookie).
-                then(function(payload) {
-                    var out = {};
-                    payload.rows.forEach(function(row) {
-                        out[row.index] = {name: row.name};
-                    });
-
-                    return {
-                        jsong: {
-                            genreLists: out
-                        }
-                    };
-                });
+            var range = aliasMap.genreListRanges;
         }
     }
 ]);
