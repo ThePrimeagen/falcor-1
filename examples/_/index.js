@@ -7,7 +7,7 @@ var model = {
                     id: 1007,
                     name: 'Daredevil',
                     rating: 4,
-                    boxshot: 'http://cdn6.nflximg.net/webp/5516/20935516.webp'
+                    boxShot: 'http://cdn6.nflximg.net/webp/5516/20935516.webp'
                 }
             ]
         },
@@ -18,7 +18,7 @@ var model = {
                     id: 956,
                     name: 'House of Cards',
                     rating: 4,
-                    boxshot: 'http://cdn1.nflximg.net/images/8755/21068755.jpg'
+                    boxShot: 'http://cdn1.nflximg.net/images/8755/21068755.jpg'
                 }
             ]
         }
