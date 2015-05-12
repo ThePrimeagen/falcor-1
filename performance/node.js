@@ -6,44 +6,51 @@ var testConfig = require('./testConfig')();
 var config = testConfig.config;
 var models = testConfig.models;
 
-// var mdpSimple = testConfig.get.simple(models.mdp, 'Value');
-//var modelSimple = testConfig.get.simple(models.model, 'Value');
-//var mdpReference = testConfig.get.reference(models.mdp, 'Value');
-//var modelReference = testConfig.get.reference(models.model, 'Value');
-//var mdpComplex = testConfig.get.complex(models.mdp, 'Value');
-//var modelComplex = testConfig.get.complex(models.model, 'Value');
-//var mdpScrollGallery = testConfig.get.scrollGallery(models.mdp, 'Value');
-//var modelScrollGallery = testConfig.get.scrollGallery(models.model, 'Value');
-// mdpSimple();
+function node(value) {
+    return {value: value, left: null, right: null};
+}
 
-// testConfig.repeatInConfig('mdp-sync-simple', 1, mdpSimple, config.tests);
-//testConfig.repeatInConfig('model-sync-simple', 15, modelSimple, config.tests);
-//testConfig.repeatInConfig('mdp-sync-reference', 15, mdpReference, config.tests);
-//testConfig.repeatInConfig('model-sync-reference', 15, modelReference, config.tests);
-//testConfig.repeatInConfig('mdp-sync-complex', 15, mdpComplex, config.tests);
-//testConfig.repeatInConfig('model-sync-complex', 15, modelComplex, config.tests);
-//testConfig.repeatInConfig('mdp-sync-gallery', 15, mdpScrollGallery, config.tests);
-//testConfig.repeatInConfig('model-sync-gallery', 15, modelScrollGallery, config.tests);
+var root = node(20);
 
-var cache = require('./../test/data/Cache')();
-var model = require("../lib/support/test-model")(cache);
+var next = root.left = node(26);
+next = next.right = node(23);
+next = next.left = node(25);
+next = next.right = node(24);
 
-model._getPathSetsAsValues  = require("../lib/json-values/get-path-sets");
-model._getPathSetsAsJSON    = require("../lib/json-dense/get-path-sets");
-model._getPathSetsAsPathMap = require("../lib/json-sparse/get-path-sets");
-model._getPathSetsAsJSONG   = require("../lib/json-graph/get-path-sets");
+function existsOdd(node, value) {
+    if (node.value === value) {
+        return true;
+    }
 
-testConfig.repeatInConfig('gallery values mbp', 1, testConfig.get.scrollGallery(models.model, 'Value'), config.tests);
-testConfig.repeatInConfig('gallery values pet', 1, testConfig.get.scrollGallery(model, 'Value'), config.tests);
+    var right, left;
+    return value > node.value && (right = node.right) && exists(right, value) ||
+            (left = node.left) && exists(left, value);
+}
 
-testConfig.repeatInConfig('gallery json mbp', 1, testConfig.get.scrollGallery(models.model, 'JSON'), config.tests);
-testConfig.repeatInConfig('gallery json pet', 1, testConfig.get.scrollGallery(model, 'JSON'), config.tests);
+function exists(node, value) {
+    if (node.value === value) {
+        return true;
+    }
 
-testConfig.repeatInConfig('gallery pathmap mbp', 1, testConfig.get.scrollGallery(models.model, 'PathMap'), config.tests);
-testConfig.repeatInConfig('gallery pathmap pet', 1, testConfig.get.scrollGallery(model, 'PathMap'), config.tests);
+    var right, left;
+    if (value > node.value) {
+       right = node.right;
+       if (right) {
+          return exists(right, value);
+       }
+    } else {
+        left = node.left;
+        if (left) {
+            return exists(left, value);
+        }
+    }
 
-testConfig.repeatInConfig('gallery graph mbp', 1, testConfig.get.scrollGallery(models.model, 'JSONG'), config.tests);
-testConfig.repeatInConfig('gallery graph pet', 1, testConfig.get.scrollGallery(model, 'JSONG'), config.tests);
+    return false;
+}
+
+
+testConfig.repeatInConfig('extra var', 1, exists.bind(null, root, 24), config.tests);
+testConfig.repeatInConfig('conditional assignment', 1, existsOdd.bind(null, root, 24), config.tests);
 
 testRunner(benchmark, config, 10, function(totalResults) {
     var fs = require('fs');
