@@ -16,7 +16,7 @@ NetflixRouter.prototype = new Router([
         route: 'genreLists[{ranges:genreListRanges}].name',
         get: function(aliasMap) {
 
-            // here is what a pathSet might look
+            // here is what aliasMap might look like
             // {
             //     genreListRanges: {from: 0, to: 1}
             // }
@@ -39,7 +39,6 @@ NetflixRouter.prototype = new Router([
             //        ... more genres ...
             //    ]
             // }
-
             var range = aliasMap.genreListRanges;
         }
     }
