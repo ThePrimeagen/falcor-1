@@ -1,8 +1,8 @@
 var falcor = require('./../falcor');
 var Model = falcor.Model;
-var middleware = require('falcor-server').expressMiddleware;
+var dataSourceRoute = require('falcor-express').dataSourceRoute;
 
 
-app.use('/member.json', middleware(function(req, res) {
+app.use('/member.json', dataSourceRoute(function(req, res) {
     return model;
 }));
