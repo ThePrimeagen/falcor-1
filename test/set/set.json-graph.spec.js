@@ -1,7 +1,7 @@
 var Rx = require("rx");
 var _ = require("lodash");
-var jsong = require("../../index");
-var Model = jsong.Model;
+var falcor = require("falcor");
+var Model = falcor.Model;
 var expect = require('chai').expect;
 
 var whole_cache = require("./support/whole-cache");
@@ -11,8 +11,8 @@ var set_envelopes = require("./support/set-envelopes");
 var set_and_verify_json_graph = require("./support/set-and-verify-json-graph");
 
 var slice = Array.prototype.slice;
-var $path = require("../../lib/types/path");
-var $atom = require("../../lib/types/atom");
+var $path = require("falcor/types/ref");
+var $atom = require("falcor/types/atom");
 
 var modes = [{
         
@@ -78,7 +78,7 @@ function execute(output, suffix, opts) {
                         }], {
                             model: new Model(_.extend({
                                 cache: partial_cache()
-                            }, opts)).clone(["_path", ["movies"]])
+                            }, opts)).clone({ _path: ["movies"] })
                         });
                     });
                     it("through a reference", function() {
@@ -255,7 +255,7 @@ function execute(output, suffix, opts) {
                             }], {
                                 model: new Model(_.extend({
                                     cache: partial_cache()
-                                }, opts)).clone(["_path", ["grid", 0]])
+                                }, opts)).clone({ _path: ["grid", 0] })
                             });
                         });
                     });
@@ -960,6 +960,7 @@ function execute(output, suffix, opts) {
                                 paths: []
                             }],
                             errors: [],
+                            hasValue: true,
                             requestedPaths: [],
                             optimizedPaths: [],
                             requestedMissingPaths: [["grid", 2, 0, "title"]],
@@ -1239,6 +1240,62 @@ function execute(output, suffix, opts) {
                         jsong: whole_cache()
                     }], {model: model});
                 });
+            });
+
+            it("sets the same JSON Graph Envelope multiple times without clobbering the cache", function() {
+                var model = new Model(_.extend({cache: partial_cache()}, opts));
+                var paths1 = [["grid", 0, {to: 1}, ["title", "summary"]]];
+                var paths2 = [["grid", 1, {to: 1}, ["title", "summary"]]];
+                var jsonGraph = {
+                    "grid": { $type: $path, value: ["grids", "grid-1234"] },
+                    "grids": {
+                        "grid-1234": {
+                            "0": { $type: $path, value: ["rows", "row-0"] },
+                            "1": { $type: $path, value: ["grids", "grid-1234", "0"] }
+                        }
+                    },
+                    "rows": {
+                        "row-0": {
+                            "0": { $type: $path, value: ["movies", "pulp-fiction"] },
+                            "1": { $type: $path, value: ["movies", "kill-bill-1"] }
+                        }
+                    },
+                    "movies": {
+                        "pulp-fiction": {
+                            "title": "Pulp Fiction",
+                            "summary": {
+                                $type: $atom,
+                                value: {
+                                    title: "Pulp Fiction",
+                                    url: "/movies/id/pulp-fiction"
+                                }
+                            }
+                        },
+                        "kill-bill-1": {
+                            "title": "Kill Bill: Vol. 1",
+                            "summary": {
+                                $type: $atom,
+                                value: {
+                                    title: "Kill Bill: Vol. 1",
+                                    url: "/movies/id/kill-bill-1"
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var envelope = { paths: paths1, jsonGraph: jsonGraph };
+
+                // Get the paths initially to build hard references.
+                model._getPathSetsAsJSON(model, paths1.concat(paths2), []);
+
+                // Set the envelope in the first time.
+                set_and_verify_json_graph(this.test, suffix, [envelope], {model: model});
+
+                envelope.paths = paths2;
+
+                // Set the envelope in again.
+                set_and_verify_json_graph(this.test, suffix, [envelope], {model: model});
             });
         });
     });

@@ -1,5 +1,5 @@
-var jsong = require('../../../index');
-var Model = jsong.Model;
+var falcor = require("falcor");
+var Model = falcor.Model;
 var Expected = require('../../data/expected');
 var Values = Expected.Values;
 var Complex = Expected.Complex;
@@ -12,7 +12,7 @@ var testRunner = require('./../../testRunner');
 var noOp = function() {};
 var LocalDataSource = require('../../data/LocalDataSource');
 var ErrorDataSource = require('../../data/ErrorDataSource');
-var $error = require('./../../../lib/types/error');
+var $error = require('falcor/types/error');
 var expect = require('chai').expect;
 
 describe('DataSource and Cache', function() {
@@ -275,16 +275,16 @@ describe('DataSource and Cache', function() {
     });
     it('should do an error set and project it.', function(done) {
         var model = new Model({
-            source: new ErrorDataSource(503, "Timeout")
+            source: new ErrorDataSource(503, "Timeout"),
+            errorSelector: function mapError(path, value) {
+                value.$foo = 'bar';
+                return value;
+            }
         });
         var called = false;
         model.
             boxValues().
             set({path: ['genreList', 0, 0, 'summary'], value: 5}).
-            withErrorSelector(function(path, value) {
-                value.$foo = 'bar';
-                return value;
-            }).
             doAction(function(x) {
                 expect(false, 'onNext should not be called.').to.be.ok;
             }, function(e) {

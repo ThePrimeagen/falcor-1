@@ -1,4 +1,4 @@
-var jsong = require("../../index");
+var jsong = require("falcor");
 var Model = jsong.Model;
 var expect = require('chai').expect;
 var Cache = require("../data/Cache");
@@ -14,10 +14,10 @@ var Bound = Expected.Bound;
 var noOp = function() {};
 var _ = require('lodash');
 
-var __ref = require("../../lib/internal/ref");
-var __context = require("../../lib/internal/context");
-var __ref_index = require("../../lib/internal/ref-index");
-var __refs_length = require("../../lib/internal/refs-length");
+var __ref = require("falcor/internal/ref");
+var __context = require("falcor/internal/context");
+var __ref_index = require("falcor/internal/ref-index");
+var __refs_length = require("falcor/internal/refs-length");
 
 describe('Removing', function() {
     var getPath = ['genreList', 0, 0, 'summary'];
@@ -90,7 +90,7 @@ describe('Expired', function() {
     var setPath = {path: ['genreList', 0, 1, 'summary'], value: {should: 'not set'}};
     var setJSON = {json: {genreList: {0: {1: {summary: 'no set'}}}}};
     var setJSONG = {
-        jsong: {
+        jsonGraph: {
             genreList: {
                 0: {
                     $type: "ref",
@@ -235,7 +235,7 @@ function setExpireyAndGet(query, output, get) {
             expect(lhs[__context]).to.equal(rhs);
         }, noOp, noOp).
         delay(100).
-        flatMap(function() {
+        flatMap(function(data) {
             if (get) {
                 return testRunner.get(model, _.cloneDeep(query), output);
             }
