@@ -10,12 +10,12 @@ module.exports = function(results) {
     debugger
     var filePath = path.resolve(dirPath, getFileName());
     results = transformCSVResults(results);
-    mkdirp(path.dirname(filepath), function (err) {
+    mkdirp(path.dirname(filePath), function (err) {
         if (err) {
-            console.error('\nError writing file: ' + filepath);
+            console.error('\nError writing file: ' + filePath);
         } else {
-            fs.writeFileSync(filepath, results);
-            console.info('\nCreated output file: ' + filepath);
+            fs.writeFileSync(filePath, results);
+            console.info('\nCreated output file: ' + filePath);
         }
     });
 };
