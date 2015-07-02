@@ -9,5 +9,15 @@ var formats = testConfig.formats;
 var tests = testConfig.get;
 var suite = testConfig.suite;
 
-suite.tests = testSuiteGenerator();
-testRunner(suite, 10, 'node ' + process.version, CSVFormatter.pipe(CSVFormatter.toTable, testReporter));
+var TESTS = {
+    'scrollGallery': tests.scrollGallery,
+    'complex': tests.complex
+};
+suite.tests = testSuiteGenerator({
+    iterations: 10,
+    models: {
+        'model': models.modelWithSource
+    },
+    formats: ['Value']
+});
+testRunner(suite, 'node ' + process.version, CSVFormatter.pipe(CSVFormatter.toTable, testReporter));
