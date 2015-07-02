@@ -10,7 +10,7 @@ module.exports = function() {
             name: 'Falcor'
         },
         models: models,
-        formats: ['Value'],
+        formats: ['JSON'],
         get: getTests,
         set: setTests,
         merge: mergeTests
