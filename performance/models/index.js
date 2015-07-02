@@ -6,6 +6,10 @@ var legacyFalcor = require('./legacy');
 
 var Cache = require('./../../test/data/Cache');
 var LocalDataStore = require('./../../test/data/LocalDataSource');
+var head = require('./../../lib/internal/head');
+var tail = require('./../../lib/internal/tail');
+var next = require('./../../lib/internal/next');
+var prev = require('./../../lib/internal/prev');
 
 module.exports = function() {
 
@@ -15,12 +19,17 @@ module.exports = function() {
     var model = new falcor.Model({cache: Cache()});
     model._root.unsafeMode = true;
 
-    var modelWithStore = new falcor.Model({source: new LocalDataStore(Cache())});
-    modelWithStore._root.unsafeMode = true;
-    var modelGet = modelWithStore.get.bind(modelWithStore);
-    modelWithStore.get = function() {
-        modelWithStore._cache = {};
-        return modelGet.apply(modelWithStore, arguments);
+    var modelWithSource = new falcor.Model({source: new LocalDataStore(Cache())});
+    modelWithSource._root.unsafeMode = true;
+    var modelGet = modelWithSource.get.bind(modelWithSource);
+    modelWithSource.get = function() {
+        modelWithSource._cache = {};
+        modelWithSource._root[head] = null;
+        modelWithSource._root[tail] = null;
+        modelWithSource._root[prev] = null;
+        modelWithSource._root[next] = null;
+        modelWithSource._root.expired = [];
+        return modelGet.apply(modelWithSource, arguments);
     };
 
     var macroModel = legacyFalcor.getMacroModel();
@@ -31,6 +40,6 @@ module.exports = function() {
         empty: emptyModel,
         macro: macroModel,
         mdp: mdpModel,
-        modelWithStore: modelWithStore
+        modelWithSource: modelWithSource
     };
 };
